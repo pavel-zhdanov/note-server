@@ -15,7 +15,6 @@ const UserSchema = mongoose.Schema({
   },
 });
 
-// Здесь не будем пользоваться стрелочными функциями из-за автоматической привязки к лексической области видимости
 UserSchema.pre(`save`, async function (next) {
   const user = this;
   if (user.isModified(`password`) || user.isNew) {
