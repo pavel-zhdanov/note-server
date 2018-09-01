@@ -1,12 +1,14 @@
 const Router = require(`express`).Router;
-const router = new Router();
-const user = require(`../models/User`);
 const AuthController = require(`../controllers/AuthController`);
+const config = require(`../config/config`);
+const passport = require(`passport`);
 
-router.route(`/`)
-    .get((req, res) => res.send(`Note Storage API`));
+const router = new Router();
 
-router.route(`/api/v1/auth`)
-    .post(AuthController.login(user));
+router.post(`/login`, AuthController.login);
+
+router.get(`/users`, passport.authenticate(`jwt`, config.session), AuthController.index);
+
+router.post(`/signup`, AuthController.signUp);
 
 module.exports = router;
