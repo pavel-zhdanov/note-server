@@ -1,4 +1,3 @@
-const mongoose = require(`mongoose`);
 const jwt = require(`jsonwebtoken`);
 const config = require(`../config/config`);
 
@@ -9,16 +8,20 @@ AuthController.login = (User) => (req, res) => {
     if (errorFindUser) {
       throw errorFindUser;
     }
+    console.log(`AC-login`);
     if (!user) {
       console.log(`login`);
       res.status(401).send({success: false, message: `Authentication failed. User not found.`});
     } else {
       user.comparePassword(req.body.password, (errorCompare, match) => {
+        console.log(`AC-compare`);
         if (match && !errorCompare) {
+          console.log(`AC-compare-if`);
           const token = jwt.sign({user}, config.secret);
           res.json({success: true, message: `Token granted`, token});
         } else {
-          res.sendStatus(401).json({success: false, message: `Authentication failed. Wrong password.`});
+          console.log(`AC-compare-else`);
+          res.status(401).send({success: false, message: `Authentication failed. Wrong password.`});
         }
       });
     }
