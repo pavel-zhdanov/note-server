@@ -6,7 +6,8 @@ const UserSchema = mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    required: true
+    required: true,
+    index: true,
   },
   password: {
     type: String,
@@ -20,18 +21,18 @@ UserSchema.pre(`save`, async function (next) {
   if (user.isModified(`password`) || user.isNew) {
     try {
       const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(user.password, salt);
-      user.password = hash;
-      return next();
+      user.password = await bcrypt.hash(user.password, salt);
+      next();
     } catch (error) {
-      return next(error);
+      next(error);
     }
   } else {
-    return next();
+    next();
   }
 });
 
 UserSchema.methods.comparePassword = async function (password, callback) {
+  console.log(`Компаре`);
   const match = await bcrypt.compare(password, this.password);
   if (match) {
     return callback(null, match);
@@ -39,4 +40,4 @@ UserSchema.methods.comparePassword = async function (password, callback) {
   return callback(new Error(`password is wrong`));
 };
 
-mongoose.model(`User`, UserSchema);
+module.exports = mongoose.model(`User`, UserSchema);
