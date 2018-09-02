@@ -13,6 +13,7 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  RefreshTokens: Array,
 });
 
 UserSchema.pre(`save`, async function (next) {

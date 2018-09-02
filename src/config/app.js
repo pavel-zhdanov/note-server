@@ -1,13 +1,11 @@
 const express = require(`express`);
-const app = express();
 const bodyParser = require(`body-parser`);
-const startDB = require(`./database`);
-startDB();
 const morgan = require(`morgan`);
 const cors = require(`cors`);
 
+const app = express();
+require(`./database`)();
 const passportConfig = require(`./passport`);
-
 const authRouter = require(`../routes/authRoute`);
 
 app.use(express.static(`.`));

@@ -10,8 +10,9 @@ const options = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
 };
 
-passport.use(new JWTStrategy(options, (jwtPayload, done) => {
-  User.findOne({id: jwtPayload.id}, (error, user) => {
+const verify = (jwtPayload, done) => {
+  global.console.log(jwtPayload);
+  User.findOne({_id: jwtPayload.id}, (error, user) => {
     if (error) {
       done(error, false);
     }
@@ -21,6 +22,8 @@ passport.use(new JWTStrategy(options, (jwtPayload, done) => {
       done(null, false);
     }
   });
-}));
+};
+
+passport.use(new JWTStrategy(options, verify));
 
 module.exports = passport;

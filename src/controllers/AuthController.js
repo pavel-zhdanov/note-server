@@ -2,6 +2,7 @@
 const jwt = require(`jsonwebtoken`);
 const config = require(`../config/config`);
 const User = require(`../models/User`);
+const Token = require(`../models/Token`);
 
 const AuthController = {};
 
@@ -10,19 +11,14 @@ AuthController.login = (req, res) => {
     if (errorFindUser) {
       throw errorFindUser;
     }
-    console.log(`AC-login`);
     if (!user) {
-      console.log(`login`);
       res.status(401).send({success: false, message: `Authentication failed. User not found.`});
     } else {
       user.comparePassword(req.body.password, (errorCompare, match) => {
-        console.log(`AC-compare`);
         if (match && !errorCompare) {
-          console.log(`AC-compare-if`);
-          const token = jwt.sign({user}, config.secret);
+          const token = jwt.sign({id: user._id}, config.secret, {expiresIn: `15m`});
           res.json({success: true, message: `Token granted`, token});
         } else {
-          console.log(`AC-compare-else`);
           res.status(401).send({success: false, message: `Authentication failed. Wrong password.`});
         }
       });
