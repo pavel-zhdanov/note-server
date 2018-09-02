@@ -11,7 +11,6 @@ const options = {
 };
 
 const verify = (jwtPayload, done) => {
-  global.console.log(jwtPayload);
   User.findOne({_id: jwtPayload.id}, (error, user) => {
     if (error) {
       done(error, false);

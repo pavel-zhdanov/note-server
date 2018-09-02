@@ -11,4 +11,6 @@ router.get(`/users`, passport.authenticate(`jwt`, config.session), AuthControlle
 
 router.post(`/signup`, AuthController.signUp);
 
+router.post(`/refresh`, AuthController.refresh);
+
 module.exports = router;
