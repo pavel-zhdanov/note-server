@@ -14,41 +14,22 @@ const makeTokenPair = (userId) => {
   return {token, refreshToken};
 };
 
-
 AuthController.login = async (req, res) => {
   try {
     const user = await User.findOne({username: req.body.username});
-    if (!user) {
-      return res.status(401).send({success: false, message: `Authentication failed. User not found.`});
-    }
+    if (!user) return res.status(401).send({success: false, message: `Authentication failed. User not found.`});
+    const match = await user.comparePassword(req.body.password);
+    if (!match) return res.status(401).send({success: false, message: `Authentication failed. Wrong password.`});
+    const tokenPair = makeTokenPair(user.id);
+    const refreshToken = new Token({
+      userId: user.id,
+      refreshToken: tokenPair.refreshToken,
+    });
+    await refreshToken.save();
+    return res.json({success: true, message: `Token granted`, ...tokenPair});
   } catch (e) {
     console.error(e);
   }
-
-  User.findOne({username: req.body.username}, (errorFindUser, user) => {
-    if (errorFindUser) throw errorFindUser;
-    if (!user) {
-      return res.status(401).send({success: false, message: `Authentication failed. User not found.`});
-    }
-    user.comparePassword(req.body.password, async (errorCompare, match) => {
-      console.log(`cp1`);
-      if (match && !errorCompare) {
-        const tokenPair = makeTokenPair(user.id);
-        const refreshToken = new Token({
-          userId: user.id,
-          refreshToken: tokenPair.refreshToken,
-        });
-        try {
-          await refreshToken.save();
-        } catch (e) {
-          console.error(e);
-          if (e) throw e;
-        }
-        return res.json({success: true, message: `Token granted`, ...tokenPair});
-      }
-      res.status(401).send({success: false, message: `Authentication failed. Wrong password.`});
-    });
-  });
 };
 
 AuthController.refresh = async (req, res) => {
