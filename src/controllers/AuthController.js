@@ -44,19 +44,10 @@ AuthController.refresh = async (req, res) => {
     });
     newRefreshToken.save();
     oldRefreshToken.remove();
-    res.json({success: true, message: `Token prolonged`, ...tokenPair});
+    res.status(200).json({success: true, message: `Token prolonged`, ...tokenPair});
   } catch (e) {
     console.error(e);
-    res.status(401).send({success: false, message: `Refresh token not found`});
-  }
-};
-
-AuthController.index = async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.status(200).json(users);
-  } catch (e) {
-    console.error(e);
+    res.status(404).send({success: false, message: `Refresh token not found`});
   }
 };
 
@@ -77,6 +68,19 @@ AuthController.signUp = async (req, res) => {
     return res.json({success: true, message: `Account created successfully`, ...tokenPair});
   } catch (e) {
     return res.status(400).json({success: false, message: `Username already exists.`});
+  }
+};
+
+AuthController.logout = async (req, res) => {
+  const refreshToken = req.body.refreshToken;
+  try {
+    const oldRefreshToken = await Token.findOne({refreshToken});
+    if (!oldRefreshToken) throw new Error(`Refresh token was not found`);
+    oldRefreshToken.remove();
+    res.status(200).json({success: true, message: `Refresh token deleted`});
+  } catch (e) {
+    console.error(e);
+    res.send({success: false, message: `Refresh token was not found`});
   }
 };
 

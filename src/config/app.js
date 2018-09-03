@@ -19,7 +19,7 @@ app.use(passport.initialize());
 
 app.use(`/api`, authRouter);
 
-app.use(`/api/note`, passport.authenticate(`jwt`, config.session), noteRouter);
+app.use(`/api/note`, noteRouter);
 
 module.exports = app;
 
