@@ -1,6 +1,6 @@
 /* eslint-disable no-invalid-this,new-cap */
-const mongoose = require(`mongoose`);
-const bcrypt = require(`bcrypt`);
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const UserSchema = mongoose.Schema({
   username: {
@@ -11,13 +11,13 @@ const UserSchema = mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
 });
 
-UserSchema.pre(`save`, async function (next) {
+UserSchema.pre('save', async function (next) {
   const user = this;
-  if (user.isModified(`password`) || user.isNew) {
+  if (user.isModified('password') || user.isNew) {
     try {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
@@ -39,8 +39,8 @@ UserSchema.methods.comparePassword = async function (password) {
     return match;
   } catch (e) {
     console.error(e);
-    return new Error(`something is broke (((`);
+    return new Error('something is broke (((');
   }
 };
 
-module.exports = mongoose.model(`User`, UserSchema);
+module.exports = mongoose.model('User', UserSchema);

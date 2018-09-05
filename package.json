@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc ava --serial --verbose"
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +24,17 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "ava": "^0.25.0",
     "eslint": "^5.4.0",
-    "eslint-config-htmlacademy": "^0.5.2"
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-htmlacademy": "^0.5.2",
+    "eslint-plugin-import": "^2.14.0",
+    "nyc": "^13.0.1",
+    "supertest": "^3.1.0"
+  },
+  "ava": {
+    "files": [
+      "tests/*.js"
+    ]
   }
 }

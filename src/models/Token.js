@@ -1,9 +1,10 @@
-const mongoose = require(`mongoose`);
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+
+const { Schema } = mongoose;
 
 const TokenSchema = new Schema({
   userId: String,
   refreshToken: String,
 });
 
-module.exports = mongoose.model(`Token`, TokenSchema);
+module.exports = mongoose.model('Token', TokenSchema);

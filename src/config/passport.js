@@ -1,17 +1,18 @@
-const PassportJWT = require(`passport-jwt`);
-const passport = require(`passport`);
+const PassportJWT = require('passport-jwt');
+const passport = require('passport');
+
 const ExtractJWT = PassportJWT.ExtractJwt;
 const JWTStrategy = PassportJWT.Strategy;
-const config = require(`./config`);
-const User = require(`../models/User`);
+const config = require('./config');
+const User = require('../models/User');
 
 const options = {
   secretOrKey: config.secret,
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
 };
 
 const verify = (jwtPayload, done) => {
-  User.findOne({_id: jwtPayload.id}, (error, user) => {
+  User.findOne({ _id: jwtPayload.id }, (error, user) => {
     if (error) {
       done(error, false);
     }

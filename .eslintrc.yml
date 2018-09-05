@@ -9,4 +9,4 @@ env:
   browser: false
   mocha: true
 
-extends: 'htmlacademy/node'
+extends: 'airbnb-base'
