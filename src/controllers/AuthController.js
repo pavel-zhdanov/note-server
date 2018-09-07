@@ -80,7 +80,21 @@ AuthController.logout = async (req, res) => {
     oldRefreshToken.remove();
     res.status(200).json({ success: true, message: 'Refresh token deleted' });
   } catch (e) {
-    res.status(404).send({ success: false, message: 'Refresh token was not found' });
+    res.status(200).send({ success: false, message: 'Refresh token was not found' });
+  }
+};
+
+AuthController.checkEmailOnAvailable = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      res.status(200).send({ usernameIsAvailable: true });
+    } else {
+      res.status(200).send({ usernameIsAvailable: false });
+    }
+  } catch (e) {
+    res.status(500).send();
   }
 };
 

@@ -100,3 +100,11 @@ test('User can use refresh token only once', async t => {
   });
   t.is(resTwo.status, 404);
 });
+
+test('User can check available off your email', async t => {
+  const resOne = await app.post('/api/check').send({
+    username: 'test',
+  });
+  t.is(resOne.status, 200);
+  t.is(resOne.body.usernameIsAvailable, false);
+});

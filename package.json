@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc ava --serial --verbose"
+    "test": "nyc ava --serial --verbose",
+    "run": " node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "multer": "^1.3.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "socket.io": "^2.1.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
