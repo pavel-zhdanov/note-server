@@ -1,4 +1,4 @@
-const Router = require('express').Router;
+const { Router } = require('express');
 const passport = require('passport');
 const AuthController = require('../controllers/AuthController');
 const config = require('../config/config');
@@ -14,5 +14,7 @@ router.post('/refresh', AuthController.refresh);
 router.post('/logout', AuthController.logout);
 
 router.post('/check', AuthController.checkEmailOnAvailable);
+
+router.get('/user', passport.authenticate('jwt', config.session), AuthController.getUserData);
 
 module.exports = router;

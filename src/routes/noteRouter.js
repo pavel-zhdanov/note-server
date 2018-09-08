@@ -20,6 +20,6 @@ router.get('/image/:id', NoteController.getImageById);
 
 router.put('/:id', passport.authenticate('jwt', config.session), NoteController.updateNoteById);
 
-router.post('/image/', passport.authenticate('jwt', config.session), upload.single('file'), NoteController.saveImage);
+router.post('/image/', upload.single('file'), NoteController.saveImage);
 
 module.exports = router;

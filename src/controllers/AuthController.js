@@ -27,7 +27,13 @@ AuthController.login = async (req, res) => {
       refreshToken: tokenPair.refreshToken,
     });
     await refreshToken.save();
-    return res.status(200).json({ success: true, message: 'Token granted', ...tokenPair });
+    return res.status(200).json({
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      avatarSrc: user.avatarSrc,
+      ...tokenPair,
+    });
   } catch (e) {
     console.error(e);
     throw e;
@@ -53,10 +59,13 @@ AuthController.refresh = async (req, res) => {
 };
 
 AuthController.signUp = async (req, res) => {
-  if (!req.body.username || !req.body.password) return res.json({ success: false, message: 'Please, pass a username and password.' });
+  const data = req.body;
+  if (!data.username || !data.password || !data.nickname) return res.status(400).send({ success: false, message: 'Please, pass a username, password and nickname.' });
   const newUser = new User({
-    username: req.body.username,
-    password: req.body.password,
+    username: data.username,
+    password: data.password,
+    nickname: data.nickname,
+    avatarSrc: data.avatarSrc,
   });
   try {
     await newUser.save();
@@ -66,7 +75,13 @@ AuthController.signUp = async (req, res) => {
       refreshToken: tokenPair.refreshToken,
     });
     refreshToken.save();
-    return res.status(200).json({ success: true, message: 'Account created successfully', ...tokenPair });
+    return res.status(200).json({
+      id: newUser.id,
+      username: newUser.username,
+      nickname: newUser.nickname,
+      avatarSrc: newUser.avatarSrc,
+      ...tokenPair,
+    });
   } catch (e) {
     return res.status(400).json({ success: false, message: 'Username already exists.' });
   }
@@ -85,16 +100,32 @@ AuthController.logout = async (req, res) => {
 };
 
 AuthController.checkEmailOnAvailable = async (req, res) => {
-  const { username } = req.body;
+  const data = req.body;
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ [data.field]: data.value });
     if (!user) {
-      res.status(200).send({ usernameIsAvailable: true });
+      res.status(200).send({ isAvailable: true });
     } else {
-      res.status(200).send({ usernameIsAvailable: false });
+      res.status(200).send({ isAvailable: false });
     }
   } catch (e) {
     res.status(500).send();
+  }
+};
+
+AuthController.getUserData = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    const decodedToken = await jwt.verify(token.replace('Bearer ', ''), config.secret);
+    const user = await User.findOne({ username: decodedToken.username });
+    res.status(200).send({
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      avatarSrc: user.avatarSrc,
+    });
+  } catch (error) {
+    res.status(404);
   }
 };
 

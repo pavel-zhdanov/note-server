@@ -13,6 +13,13 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  nickname: {
+    type: String,
+    required: true,
+  },
+  avatarSrc: {
+    type: String,
+  },
 });
 
 UserSchema.pre('save', async function (next) {
