@@ -8,10 +8,8 @@ const Token = require('../models/Token');
 
 const AuthController = {};
 const makeTokenPair = async (userId) => {
-  const user = await User.findOne({ _id: userId });
-  const token = jwt.sign({ id: userId, username: user.username }, config.secret, { expiresIn: '1m' });
+  const token = jwt.sign({ id: userId }, config.secret, { expiresIn: '1m' });
   const refreshToken = uuid.v4();
-
   return { token, refreshToken };
 };
 
@@ -44,7 +42,7 @@ AuthController.refresh = async (req, res) => {
   const { refreshToken } = req.body;
   try {
     const oldRefreshToken = await Token.findOne({ refreshToken });
-    if (!oldRefreshToken) throw new Error();
+    if (!oldRefreshToken) throw new Error('Refresh token not found');
     const tokenPair = await makeTokenPair(oldRefreshToken.userId);
     const newRefreshToken = new Token({
       userId: oldRefreshToken.userId,
@@ -52,9 +50,9 @@ AuthController.refresh = async (req, res) => {
     });
     newRefreshToken.save();
     oldRefreshToken.remove();
-    res.status(200).json({ success: true, message: 'Token prolonged', ...tokenPair });
-  } catch (e) {
-    res.status(404).send({ success: false, message: 'Refresh token not found' });
+    res.status(200).send({ success: true, message: 'Token prolonged', ...tokenPair });
+  } catch (error) {
+    res.status(404).send({ success: false, message: error.message });
   }
 };
 
@@ -93,13 +91,13 @@ AuthController.logout = async (req, res) => {
     const oldRefreshToken = await Token.findOne({ refreshToken });
     if (!oldRefreshToken) throw new Error('Refresh token was not found');
     oldRefreshToken.remove();
-    res.status(200).json({ success: true, message: 'Refresh token deleted' });
+    res.status(200).send({ success: true, message: 'Refresh token deleted' });
   } catch (e) {
     res.status(200).send({ success: false, message: 'Refresh token was not found' });
   }
 };
 
-AuthController.checkEmailOnAvailable = async (req, res) => {
+AuthController.checkOnAvailable = async (req, res) => {
   const data = req.body;
   try {
     const user = await User.findOne({ [data.field]: data.value });
@@ -117,7 +115,8 @@ AuthController.getUserData = async (req, res) => {
   try {
     const token = req.headers.authorization;
     const decodedToken = await jwt.verify(token.replace('Bearer ', ''), config.secret);
-    const user = await User.findOne({ username: decodedToken.username });
+    console.log(decodedToken);
+    const user = await User.findOne({ _id: decodedToken.id });
     res.status(200).send({
       id: user.id,
       username: user.username,
@@ -125,7 +124,7 @@ AuthController.getUserData = async (req, res) => {
       avatarSrc: user.avatarSrc,
     });
   } catch (error) {
-    res.status(404);
+    res.status(404).send();
   }
 };
 

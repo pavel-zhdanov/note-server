@@ -36,6 +36,7 @@ test('User can succesfully signup', async t => {
   const res = await app.post('/api/signup').send({
     username: 'testsign',
     password: 'testsign',
+    nickname: 'testsign',
   });
   const res1 = await app.post('/api/signup').send({
     username: 'test',
@@ -80,7 +81,7 @@ test('user sent an invalid refreshtoken', async t => {
   const resLogout = await app.post('/api/logout').send({
     refreshToken: 'INVALID_TOKEN',
   });
-  t.is(resLogout.status, 404);
+  t.is(resLogout.status, 200);
 });
 
 test('User can use refresh token only once', async t => {
@@ -103,8 +104,16 @@ test('User can use refresh token only once', async t => {
 
 test('User can check available off your email', async t => {
   const resOne = await app.post('/api/check').send({
-    username: 'test',
+    field: 'username',
+    value: 'test',
   });
   t.is(resOne.status, 200);
-  t.is(resOne.body.usernameIsAvailable, false);
+  t.is(resOne.body.isAvailable, false);
+
+  const resTwo = await app.post('/api/check').send({
+    field: 'username',
+    value: 'availableTest',
+  });
+  t.is(resTwo.status, 200);
+  t.is(resTwo.body.isAvailable, true);
 });

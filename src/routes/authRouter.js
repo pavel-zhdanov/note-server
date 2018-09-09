@@ -13,7 +13,7 @@ router.post('/refresh', AuthController.refresh);
 
 router.post('/logout', AuthController.logout);
 
-router.post('/check', AuthController.checkEmailOnAvailable);
+router.post('/check', AuthController.checkOnAvailable);
 
 router.get('/user', passport.authenticate('jwt', config.session), AuthController.getUserData);
 

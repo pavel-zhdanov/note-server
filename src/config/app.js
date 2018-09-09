@@ -9,7 +9,8 @@ const noteRouter = require('../routes/noteRouter');
 
 const createApp = () => {
   const app = express();
-  app.use(express.static('.'));
+  console.log(__dirname);
+  app.use('/', express.static(`${__dirname}/../static`));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(morgan('dev'));
