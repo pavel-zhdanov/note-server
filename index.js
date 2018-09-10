@@ -2,7 +2,7 @@ const SocketIO = require('socket.io');
 const http = require('http');
 const app = require('./src/config/app')();
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 const server = http.createServer(app);
 

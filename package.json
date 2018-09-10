@@ -39,5 +39,8 @@
     "files": [
       "tests/*.js"
     ]
+  },
+  "engines": {
+    "node": "10.9.0"
   }
 }
