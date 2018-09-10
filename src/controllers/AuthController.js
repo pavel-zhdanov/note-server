@@ -25,6 +25,7 @@ AuthController.login = async (req, res) => {
       refreshToken: tokenPair.refreshToken,
     });
     await refreshToken.save();
+    console.log(tokenPair);
     return res.status(200).json({
       id: user.id,
       username: user.username,
@@ -40,10 +41,13 @@ AuthController.login = async (req, res) => {
 
 AuthController.refresh = async (req, res) => {
   const { refreshToken } = req.body;
+  console.log(refreshToken);
   try {
     const oldRefreshToken = await Token.findOne({ refreshToken });
+    console.log(oldRefreshToken);
     if (!oldRefreshToken) throw new Error('Refresh token not found');
     const tokenPair = await makeTokenPair(oldRefreshToken.userId);
+    console.log(tokenPair);
     const newRefreshToken = new Token({
       userId: oldRefreshToken.userId,
       refreshToken: tokenPair.refreshToken,

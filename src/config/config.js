@@ -1,6 +1,5 @@
 module.exports = {
   secret: 'VERYSEKRETKEY',
   session: { session: false },
-  database: 'mongodb://127.0.0.1:27017/note-storage',
-
+  database: 'mongodb://aikerd:qwertyasd123@ds219832.mlab.com:19832/notes',
 };
