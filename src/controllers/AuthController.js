@@ -132,4 +132,23 @@ AuthController.getUserData = async (req, res) => {
   }
 };
 
+AuthController.updateUserData = async (req, res) => {
+  const data = req.body;
+  if (!data || !data.nickname) {
+    res.status(400).send('User nickname was expected');
+  }
+  try {
+    const token = req.headers.authorization;
+    const decodedToken = await jwt.verify(token.replace('Bearer ', ''), config.secret);
+    const user = await User.findOne({ _id: decodedToken.id });
+    user.nickname = data.nickname;
+    await user.save();
+    res.status(200).send({
+      nickname: user.nickname,
+    });
+  } catch (error) {
+    res.status(404).send();
+  }
+};
+
 module.exports = AuthController;

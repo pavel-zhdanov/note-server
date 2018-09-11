@@ -91,6 +91,22 @@ noteController.saveImage = async (req, res) => {
   }
 };
 
+noteController.updateImageById = async (req, res) => {
+  const { id } = req.params;
+  if (!req.file) {
+    return res.status(204).send({ message: 'Expected image file' });
+  }
+  try {
+    const image = await Image.findOne({ _id: id });
+    image.image = req.file.buffer;
+    const result = await image.save();
+    res.status(201).send({ id: result._id, message: 'Image was updated' });
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+};
+
 noteController.updateNoteById = async (req, res) => {
   try {
     const { id } = req.params;

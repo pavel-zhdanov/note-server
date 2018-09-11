@@ -18,6 +18,8 @@ router.delete('/:id', passport.authenticate('jwt', config.session), NoteControll
 
 router.get('/image/:id', NoteController.getImageById);
 
+router.put('/image/:id', upload.single('file'), passport.authenticate('jwt', config.session), NoteController.updateImageById);
+
 router.put('/:id', passport.authenticate('jwt', config.session), NoteController.updateNoteById);
 
 router.post('/image/', upload.single('file'), NoteController.saveImage);

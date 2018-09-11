@@ -17,4 +17,6 @@ router.post('/check', AuthController.checkOnAvailable);
 
 router.get('/user', passport.authenticate('jwt', config.session), AuthController.getUserData);
 
+router.put('/user', passport.authenticate('jwt', config.session), AuthController.updateUserData);
+
 module.exports = router;
